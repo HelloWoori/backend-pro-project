@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container" style="max-width: 600px">
+    <div class="py-5 text-center">
+        <h2>#오운완</h2>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-primary float-end"
+                    onclick="location.href='formAdd.html'"
+                    th:onclick="|location.href='@{/community/articles/add}'|"
+                    type="button">인증하기</button>
+        </div>
+    </div><!-- /row -->
+
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col-lg-12 offset-md-4 mb-4" th:each="article : ${articles}">
+            <div class="card" style="width: 18rem;">
+                <img src="#" th:src="${article.imagePath}" class="card-img-top" alt="sample">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${article.userId}">유저ID</h5>
+                    <a href="#" class="btn btn-primary" th:href="@{|/community/articles/${article.id}|}">상세</a>
+                    <a href="#" class="btn btn-secondary">댓글</a>
+                    <a href="#" class="btn btn-danger">하트</a>
+                </div>
+            </div>
+        </div>
+    </div><!-- /row -->
+</div> <!-- /container -->
+</body>
+</html>
