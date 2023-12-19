@@ -1,11 +1,11 @@
-package hellowoori.backendproproject.domain.article.entity;
+package hellowoori.backendproproject.domain.article.domain;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -13,20 +13,20 @@ import javax.persistence.*;
 @Table(
         indexes = {
                 @Index(name = "idx_user_id", columnList = "userId"),
-                @Index(name = "idx_community_id", columnList = "communityId")
+                @Index(name = "idx_gathering_id", columnList = "gatheringId")
         }
 )
 public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long articleId;
 
     @Column(nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(nullable = false)
-    private Long communityId;
+    private Long gatheringId;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String imagePath;
@@ -34,13 +34,15 @@ public class Article {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT false", nullable = false)
+    @Column(nullable = false)
     private boolean isCommentAllowed;
 
-    @Builder
-    public Article(Long userId, Long communityId, String imagePath, String content, boolean isCommentAllowed) {
+    @Column(columnDefinition = "BOOLEAN DEFAULT false", nullable = false)
+    private boolean isBlocked;
+
+    public Article(UUID userId, Long gatheringId, String imagePath, String content, boolean isCommentAllowed) {
         this.userId = userId;
-        this.communityId = communityId;
+        this.gatheringId = gatheringId;
         this.imagePath = imagePath;
         this.content = content;
         this.isCommentAllowed = isCommentAllowed;

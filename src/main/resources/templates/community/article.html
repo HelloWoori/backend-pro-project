@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2><span th:text="${articleDetail.nickname}">OOO</span>님의 인증글</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-5 mx-auto">
+                <button class="btn btn-secondary mb-2"
+                        onclick="location.href='articles.html'"
+                        th:onclick="|location.href='@{/community/{gatheringId}/articles(gatheringId=${articleDetail.gatheringId})}'|"
+                        type="button">목록으로</button>
+                <div class="card">
+                    <img src="#" th:src="${articleDetail.imagePath}" class="card-img-top" alt="sample">
+                    <div class="card-body">
+                        <h6 class="card-title">#<span th:text="${articleDetail.gatheringName}">모임명</span></h6>
+                        <p class="card-text" th:text="${articleDetail.content}">내용</p>
+                        <a href="#" class="btn btn-primary" th:href="@{/community/articles/{articleId}/edit(articleId=${articleDetail.articleId})}">수정하기</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                        2시간 전
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /container -->
+</body>
+</html>
