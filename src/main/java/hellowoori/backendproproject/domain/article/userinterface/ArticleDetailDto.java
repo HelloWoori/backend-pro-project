@@ -13,6 +13,7 @@ public class ArticleDetailDto {
     private String gatheringName;
     private String imagePath;
     private String content;
+    private Long loveCount;
 
     public ArticleDetailDto(
             Long articleId,
@@ -20,12 +21,14 @@ public class ArticleDetailDto {
             String nickname,
             String gatheringName,
             String imagePath,
-            String content) {
+            String content,
+            Long loveCount) {
         this.articleId = articleId;
         this.gatheringId = gatheringId;
         this.nickname = nickname;
         this.gatheringName = gatheringName;
         this.imagePath = imagePath;
         this.content = content;
+        this.loveCount = loveCount;
     }
 }

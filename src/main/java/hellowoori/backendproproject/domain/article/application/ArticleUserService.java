@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service("articleUserService")
 public class ArticleUserService implements ArticleBaseService {
+
     private final ArticleRepository articleRepository;
 
     public List<Article> findAllArticlesByGatheringId(Long gatheringId) {

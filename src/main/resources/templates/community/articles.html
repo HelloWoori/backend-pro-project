@@ -12,13 +12,12 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-6 mb-2">
+        <div class="col-lg-12 mb-2">
             <button class="btn btn-warning float-start"
                     onclick="location.href='index.html'"
                     th:onclick="|location.href='@{/}'|"
                     type="button">모임목록</button>
-        </div>
-        <div class="col-lg-6">
+
             <button class="btn btn-primary float-end"
                     onclick="location.href='formAdd.html'"
                     th:onclick="|location.href='@{/community/{gatheringId}/articles/add(gatheringId=${gatheringId})}'|"
@@ -35,8 +34,6 @@
                 <div class="card-body">
                     <h5 class="card-title" th:text="${article.nickname}">유저ID</h5>
                     <a href="#" class="btn btn-primary" th:href="@{|/community/${article.gatheringId}/articles/${article.articleId}|}">상세</a>
-                    <a href="#" class="btn btn-secondary">댓글</a>
-                    <a href="#" class="btn btn-danger">하트</a>
                 </div>
             </div>
         </div>

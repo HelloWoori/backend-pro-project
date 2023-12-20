@@ -12,8 +12,8 @@ import java.util.UUID;
 @Entity
 @Table(
         indexes = {
-                @Index(name = "idx_user_id", columnList = "userId"),
-                @Index(name = "idx_gathering_id", columnList = "gatheringId")
+                @Index(columnList = "userId"),
+                @Index(columnList = "gatheringId")
         }
 )
 public class Article {
@@ -31,7 +31,7 @@ public class Article {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String imagePath;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 150)
     private String content;
 
     @Column(nullable = false)

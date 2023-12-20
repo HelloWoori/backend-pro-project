@@ -9,6 +9,8 @@
     <div class="container">
         <div class="py-5 text-center">
             <h2><span th:text="${articleDetail.nickname}">OOO</span>님의 인증글</h2>
+            <h2 th:if="${param.resultLove != null and param.resultLove}" th:text="'♥'"></h2>
+            <h2 th:if="${param.resultLove != null and !param.resultLove}" th:text="'♡'"></h2>
         </div>
 
         <div class="row">
@@ -22,12 +24,29 @@
                     <div class="card-body">
                         <h6 class="card-title">#<span th:text="${articleDetail.gatheringName}">모임명</span></h6>
                         <p class="card-text" th:text="${articleDetail.content}">내용</p>
+                        <a href="#" class="btn btn-secondary mb-2">댓글달기</a>
+                        <form method="post" th:action="@{/community/{gatheringId}/articles/{articleId}/like(gatheringId=${articleDetail.gatheringId}, articleId=${articleDetail.articleId})}">
+                            <button type="submit" class="btn btn-danger mb-2">
+                                하트 +<span th:text="${articleDetail.loveCount}">1</span>
+                            </button>
+                        </form>
                         <a href="#" class="btn btn-primary" th:href="@{/community/articles/{articleId}/edit(articleId=${articleDetail.articleId})}">수정하기</a>
                     </div>
                     <div class="card-footer text-muted">
                         2시간 전
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-5 mx-auto">
+                <h4>댓글</h4>
+                <ul class="list-group">
+                    <li th:each="comment : ${comments}" class="list-group-item">
+                        <span th:text="${comment.nickname}"></span>: <span th:text="${comment.content}"></span>
+                    </li>
+                </ul>
             </div>
         </div>
     </div> <!-- /container -->

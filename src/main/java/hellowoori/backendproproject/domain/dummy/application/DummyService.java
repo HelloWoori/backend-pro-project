@@ -1,6 +1,8 @@
 package hellowoori.backendproproject.domain.dummy.application;
 
 import hellowoori.backendproproject.domain.article.domain.Article;
+import hellowoori.backendproproject.domain.article.domain.Comment;
+import hellowoori.backendproproject.domain.article.domain.CommentRepository;
 import hellowoori.backendproproject.domain.gathering.domain.Gathering;
 import hellowoori.backendproproject.domain.article.domain.ArticleRepository;
 import hellowoori.backendproproject.domain.gathering.domain.GatheringRepository;
@@ -19,6 +21,7 @@ public class DummyService {
     private final UserRepository userRepository;
     private final GatheringRepository gatheringRepository;
     private final ArticleRepository articleRepository;
+    private final CommentRepository commentRepository;
 
     public void makeDummyUserData() {
         userRepository.save(new User("dummy01"));
@@ -30,6 +33,14 @@ public class DummyService {
         gatheringRepository.save(new Gathering("모임1", ""));
         gatheringRepository.save(new Gathering("모임2", "222"));
         gatheringRepository.save(new Gathering("모임3", "333"));
+    }
+
+    public void makeDummyCommentData() {
+        commentRepository.save(new Comment(getDummyUserId(), 1L, "hi"));
+        commentRepository.save(new Comment(getDummyUserId(), 1L, "hello"));
+        commentRepository.save(new Comment(getDummyUserId(), 1L, "bye"));
+        commentRepository.save(new Comment(getDummyUserId(), 2L, "aaa"));
+        commentRepository.save(new Comment(getDummyUserId(), 2L, "bbb"));
     }
 
     public UUID getDummyUserId() {

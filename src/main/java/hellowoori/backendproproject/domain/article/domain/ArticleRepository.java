@@ -9,6 +9,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     List<Article> findByGatheringId(Long gatheringId);
     List<Article> findByGatheringIdAndIsBlockedIsFalse(Long gatheringId);
-
     Optional<Article> findByArticleIdAndIsBlockedIsFalse(Long articleId);
 }

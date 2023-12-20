@@ -1,9 +1,13 @@
 package hellowoori.backendproproject.domain.community.application;
 
 import hellowoori.backendproproject.domain.article.application.ArticleBaseService;
+import hellowoori.backendproproject.domain.article.application.CommentService;
+import hellowoori.backendproproject.domain.article.application.LoveService;
 import hellowoori.backendproproject.domain.article.domain.Article;
+import hellowoori.backendproproject.domain.article.domain.Comment;
 import hellowoori.backendproproject.domain.article.userinterface.ArticleDetailDto;
 import hellowoori.backendproproject.domain.article.userinterface.ArticleListDto;
+import hellowoori.backendproproject.domain.article.userinterface.CommentDto;
 import hellowoori.backendproproject.domain.gathering.application.GatheringService;
 import hellowoori.backendproproject.domain.user.application.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,14 +24,20 @@ public class CommunityService {
     private final UserService userService;
     private final ArticleBaseService articleBaseService;
     private final GatheringService gatheringService;
+    private final LoveService loveService;
+    private final CommentService commentService;
 
     public CommunityService(
             UserService userService,
             @Qualifier("articleCommunityService") ArticleBaseService articleUserService,
-            GatheringService gatheringService) {
+            GatheringService gatheringService,
+            LoveService loveService,
+            CommentService commentService) {
         this.userService = userService;
         this.articleBaseService = articleUserService;
         this.gatheringService = gatheringService;
+        this.loveService = loveService;
+        this.commentService = commentService;
     }
 
     public List<ArticleListDto> getArticles(Long gatheringId) {
@@ -52,6 +62,7 @@ public class CommunityService {
 
             String nickname = userService.findNickname(userId);
             String gatheringName = gatheringService.findGatheringName(gatheringId);
+            Long loveCount = loveService.countLove(articleId);
 
             return new ArticleDetailDto(
                     articleId,
@@ -59,7 +70,8 @@ public class CommunityService {
                     nickname,
                     gatheringName,
                     article.getImagePath(),
-                    article.getContent());
+                    article.getContent(),
+                    loveCount);
         }
 
         return null;
@@ -67,5 +79,25 @@ public class CommunityService {
 
     public void saveArticle(Article article) {
         articleBaseService.save(article);
+    }
+
+    public boolean updateLove(Long articleId, UUID userId) {
+        return loveService.switchLoveStatus(articleId, userId);
+    }
+
+    public void addComment() {
+
+    }
+
+    public List<CommentDto> getComments(Long articleId) {
+        List<Comment> comments = commentService.findAllCommentsByArticleId(articleId);
+
+        return comments.stream()
+                .map(comment -> new CommentDto(
+                        comment.getCommentId(),
+                        userService.findNickname(comment.getUserId()),
+                        comment.getArticleId(),
+                        comment.getContent()))
+                .collect(Collectors.toList());
     }
 }
