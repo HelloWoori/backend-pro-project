@@ -1,11 +1,10 @@
 package hellowoori.backendproproject.domain.dummy.application;
 
 import hellowoori.backendproproject.domain.article.domain.Article;
-import hellowoori.backendproproject.domain.article.domain.Comment;
 import hellowoori.backendproproject.domain.article.domain.CommentRepository;
-import hellowoori.backendproproject.domain.gathering.domain.Gathering;
+import hellowoori.backendproproject.domain.community.domain.Community;
 import hellowoori.backendproproject.domain.article.domain.ArticleRepository;
-import hellowoori.backendproproject.domain.gathering.domain.GatheringRepository;
+import hellowoori.backendproproject.domain.community.domain.CommunityRepository;
 import hellowoori.backendproproject.domain.user.domain.User;
 import hellowoori.backendproproject.domain.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +13,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class DummyService {
 
     private final UserRepository userRepository;
-    private final GatheringRepository gatheringRepository;
+    private final CommunityRepository communityRepository;
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
 
@@ -29,18 +28,13 @@ public class DummyService {
         userRepository.save(new User("dummy03"));
     }
 
-    public void makeDummyGatheringData() {
-        gatheringRepository.save(new Gathering("모임1", ""));
-        gatheringRepository.save(new Gathering("모임2", "222"));
-        gatheringRepository.save(new Gathering("모임3", "333"));
+    public void makeDummyCommunityData() {
+        communityRepository.save(new Community("모임1", ""));
+        communityRepository.save(new Community("모임2", "222"));
+        communityRepository.save(new Community("모임3", "333"));
     }
 
     public void makeDummyCommentData() {
-        commentRepository.save(new Comment(getDummyUserId(), 1L, "hi"));
-        commentRepository.save(new Comment(getDummyUserId(), 1L, "hello"));
-        commentRepository.save(new Comment(getDummyUserId(), 1L, "bye"));
-        commentRepository.save(new Comment(getDummyUserId(), 2L, "aaa"));
-        commentRepository.save(new Comment(getDummyUserId(), 2L, "bbb"));
     }
 
     public UUID getDummyUserId() {
@@ -49,7 +43,7 @@ public class DummyService {
             return UUID.randomUUID();
         }
 
-        return users.get(0).getUserId();
+        return users.get(0).getId();
     }
 
     public void makeDummyArticleData() {
@@ -60,34 +54,34 @@ public class DummyService {
 
         // 인증글 정보 생성 + 게시판에도 등록
         articleRepository.save(new Article(
-                users.get(0).getUserId(),
+                users.get(0).getId(),
                 1L,
                 "/images/default.png",
                 "예제1",
                 true));
 
         articleRepository.save(new Article(
-                users.get(0).getUserId(),
+                users.get(0).getId(),
                 1L,
                 "/images/default.png",
                 "예제2",
                 false));
 
         articleRepository.save(new Article(
-                users.get(0).getUserId(),
+                users.get(0).getId(),
                 2L,
                 "/images/default.png",
                 "예제3",
                 true));
 
         articleRepository.save(new Article(
-                users.get(1).getUserId(),
+                users.get(1).getId(),
                 1L,
                 "/images/default.png",
                 "예제4",
                 true));
         articleRepository.save(new Article(
-                users.get(2).getUserId(),
+                users.get(2).getId(),
                 3L,
                 "/images/default.png",
                 "예제5",

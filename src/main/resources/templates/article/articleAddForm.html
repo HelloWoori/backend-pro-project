@@ -11,7 +11,7 @@
     <h2>오운완 인증하기</h2>
   </div>
 
-  <form action="article.html" th:action method="post">
+  <form action="articleDetail.html" th:action method="post">
     <div class="mb-3">
       <input type="hidden" id="imagePath" name="imagePath" value="/images/default.png">
     </div>
@@ -33,7 +33,7 @@
       <div class="col">
         <button class="w-100 btn btn-secondary btn-lg"
                 onclick="location.href='articles.html'"
-                th:onclick="|location.href='@{/community/{gatheringId}/articles(gatheringId=${gatheringId})}'|"
+                th:onclick="|location.href='@{/communities/{communityId}/articles(communityId=${communityId})}'|"
                 type="button">취소</button>
       </div>
     </div><!-- /row -->

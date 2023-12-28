@@ -1,21 +1,21 @@
-package hellowoori.backendproproject.domain.article.userinterface;
+package hellowoori.backendproproject.domain.article.userinterface.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CommentDto {
+public class CommentListDto {
 
     private Long commentId;
-    private String nickname;
     private Long articleId;
+    private String nickname;
     private String content;
 
-    public CommentDto(Long commentId, String nickname, Long articleId, String content) {
+    public CommentListDto(Long commentId, Long articleId, String nickname, String content) {
         this.commentId = commentId;
-        this.nickname = nickname;
         this.articleId = articleId;
+        this.nickname = nickname;
         this.content = content;
     }
 }

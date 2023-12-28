@@ -1,13 +1,13 @@
 package hellowoori.backendproproject.domain.article.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    List<Article> findByGatheringId(Long gatheringId);
-    List<Article> findByGatheringIdAndIsBlockedIsFalse(Long gatheringId);
-    Optional<Article> findByArticleIdAndIsBlockedIsFalse(Long articleId);
+    @Query("SELECT a.id FROM Article a WHERE a.communityId = :communityId")
+    List<Long> findIdsByCommunityId(@Param("communityId") Long communityId);
 }

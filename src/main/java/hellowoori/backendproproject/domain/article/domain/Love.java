@@ -1,37 +1,41 @@
 package hellowoori.backendproproject.domain.article.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import hellowoori.backendproproject.global.entity.BaseTimeEntity;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Table(
         indexes = {
-                @Index(columnList = "userId"),
+                @Index(columnList = "articleId"),
         },
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"articleId", "userId"})
         }
 )
-public class Love {
+public class Love extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long loveId;
-
-    @Column(nullable = false)
-    private Long articleId;
+    private Long id;
 
     @Column(nullable = false)
     private UUID userId;
 
-    public Love(Long articleId, UUID userId) {
-        this.articleId = articleId;
+    @ManyToOne
+    @JoinColumn(name = "articleId")
+    @ToString.Exclude
+    private Article article;
+
+    public Love(UUID userId, Article article) {
         this.userId = userId;
+        this.article = article;
     }
 }
