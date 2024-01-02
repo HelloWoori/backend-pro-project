@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2><span th:text="${articleDetail.nickname}">OOO</span>님의 인증글</h2>
+            <h2 th:if="${param.resultLove != null and param.resultLove}" th:text="'♥'"></h2>
+            <h2 th:if="${param.resultLove != null and !param.resultLove}" th:text="'♡'"></h2>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-5 mx-auto">
+                <button class="btn btn-secondary mb-2"
+                        onclick="location.href='articles.html'"
+                        th:onclick="|location.href='@{/communities/{communityId}/articles(communityId=${articleDetail.communityId})}'|"
+                        type="button">목록으로</button>
+                <div class="card">
+                    <img src="#" th:src="${articleDetail.imagePath}" class="card-img-top" alt="sample">
+                    <div class="card-body">
+                        <h6 class="card-title">#<span th:text="${articleDetail.communityName}">모임명</span></h6>
+                        <p class="card-text" th:text="${articleDetail.content}">내용</p>
+                        <form method="post" th:action="@{/communities/{communityId}/articles/{articleId}/like(communityId=${articleDetail.communityId}, articleId=${articleDetail.articleId})}">
+                            <button type="submit" class="btn btn-danger mb-2">
+                                하트 +<span th:text="${articleDetail.loveCount}">1</span>
+                            </button>
+                        </form>
+                        <a href="#" class="btn btn-primary" th:href="@{/communities/{communityId}/articles/{articleId}/edit(communityId=${articleDetail.communityId}, articleId=${articleDetail.articleId})}">수정하기</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                        2시간 전
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-5 mx-auto">
+                <!-- 댓글 작성 -->
+                <form th:action="@{/communities/{communityId}/articles/{articleId}/comments/add(communityId=${articleDetail.communityId}, articleId=${articleDetail.articleId})}" method="post">
+                    <div class="form-group">
+                        <label for="content">댓글 (최대 150자):</label>
+                        <textarea class="form-control" id="content" name="content" rows="2" maxlength="150" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">댓글 작성</button>
+                </form>
+                <hr/>
+                <!-- 댓글 목록 -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">닉네임</th>
+                        <th scope="col">내용</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="comment : ${comments}">
+                        <td th:text="${comment.nickname}"></td>
+                        <td th:text="${comment.content}"></td>
+                        <td class="text-center align-middle">
+                            <form th:action="@{/communities/{communityId}/articles/{articleId}/comments/{commentId}/delete(communityId=${articleDetail.communityId}, articleId=${articleDetail.articleId}, commentId=${comment.commentId})}" method="post">
+                                <button type="submit" class="btn btn-sm btn-danger">x</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- /container -->
+</body>
+</html>
