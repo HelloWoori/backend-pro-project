@@ -8,19 +8,15 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class CommentAddCommand {
+public class CommentDeleteCommand {
 
     private UUID userId;
     private Long articleId;
-    private String content;
+    private Long commentId;
 
-    public CommentAddCommand(UUID userId, Long articleId, String content) {
+    public CommentDeleteCommand(UUID userId, Long articleId, Long commentId) {
         this.userId = userId;
         this.articleId = articleId;
-        this.content = content;
-    }
-
-    public Comment toEntity() {
-        return new Comment(this.getUserId(), this.getContent());
+        this.commentId = commentId;
     }
 }

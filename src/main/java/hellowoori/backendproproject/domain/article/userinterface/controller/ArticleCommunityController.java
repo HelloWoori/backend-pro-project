@@ -63,7 +63,7 @@ public class ArticleCommunityController {
     @PostMapping("/{communityId}/articles/{articleId}/like")
     public String likeArticle(@PathVariable Long articleId, RedirectAttributes redirectAttributes) {
         //TODO: userId를 로그인한 유저의 정보로 넣어줘야함
-        boolean resultLove = articleService.updateLove(articleId, dummyService.getDummyUserId());
+        boolean resultLove = articleService.toggleLove(articleId, dummyService.getDummyUserId());
         redirectAttributes.addAttribute("resultLove", resultLove);
         return "redirect:/communities/{communityId}/articles/{articleId}";
     }
@@ -79,8 +79,10 @@ public class ArticleCommunityController {
 
 
     @PostMapping("/{communityId}/articles/{articleId}/comments/{commentId}/delete")
-    public String deleteComment(@PathVariable Long commentId) {
-        articleService.deleteComment(commentId, dummyService.getDummyUserId());
+    public String deleteComment(@PathVariable Long articleId, @PathVariable Long commentId) {
+        CommentDeleteRequest commentDeleteReq = new CommentDeleteRequest(dummyService.getDummyUserId(), articleId, commentId);
+        CommentDeleteCommand commentDeleteCmd = commentDeleteReq.toCommand();
+        articleService.deleteComment(commentDeleteCmd);
         return "redirect:/communities/{communityId}/articles/{articleId}";
     }
 
