@@ -2,6 +2,7 @@ package hellowoori.backendproproject.domain.user.application;
 
 import hellowoori.backendproproject.domain.user.domain.User;
 import hellowoori.backendproproject.domain.user.domain.UserRepository;
+import hellowoori.backendproproject.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Optional<User> findOne(UUID userId) {
-        return userRepository.findById(userId);
+    public User findOne(UUID userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     public String findNickname(UUID userId) {

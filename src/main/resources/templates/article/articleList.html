@@ -9,6 +9,9 @@
 <div class="container" style="max-width: 600px">
     <div class="py-5 text-center">
         <h2>#오운완</h2>
+        <form th:action="@{/communities/{communityId}/delete(communityId=${communityId})}" method="post">
+            <button type="submit" class="btn btn-sm btn-danger">모임삭제</button>
+        </form>
     </div>
 
     <div class="row">

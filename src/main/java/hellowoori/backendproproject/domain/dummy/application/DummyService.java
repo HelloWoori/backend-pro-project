@@ -1,17 +1,17 @@
 package hellowoori.backendproproject.domain.dummy.application;
 
 import hellowoori.backendproproject.domain.article.domain.Article;
-import hellowoori.backendproproject.domain.article.domain.CommentRepository;
 import hellowoori.backendproproject.domain.community.domain.Community;
 import hellowoori.backendproproject.domain.article.domain.ArticleRepository;
 import hellowoori.backendproproject.domain.community.domain.CommunityRepository;
+import hellowoori.backendproproject.domain.community.domain.ECommunityJoinStatus;
 import hellowoori.backendproproject.domain.user.domain.User;
 import hellowoori.backendproproject.domain.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +20,18 @@ public class DummyService {
     private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
     private final ArticleRepository articleRepository;
-    private final CommentRepository commentRepository;
+
+
+    /**
+     * 테스트용 데이터 추가
+     */
+    @PostConstruct
+    public void init() {
+        this.makeDummyUserData();
+        this.makeDummyCommunityData();
+        this.makeDummyArticleData();
+        this.makeDummyCommentData();
+    }
 
     public void makeDummyUserData() {
         userRepository.save(new User("dummy01"));
@@ -29,21 +40,20 @@ public class DummyService {
     }
 
     public void makeDummyCommunityData() {
-        communityRepository.save(new Community("모임1", ""));
-        communityRepository.save(new Community("모임2", "222"));
-        communityRepository.save(new Community("모임3", "333"));
+        communityRepository.save(new Community("모임1", "", ECommunityJoinStatus.JOIN_FREE));
+        communityRepository.save(new Community("모임2", "222", ECommunityJoinStatus.JOIN_FREE));
+        communityRepository.save(new Community("모임3", "333", ECommunityJoinStatus.JOIN_APPLY));
     }
 
     public void makeDummyCommentData() {
     }
 
-    public UUID getDummyUserId() {
+    public User getDummyUser() {
         List<User> users = userRepository.findAll();
         if (users.size() < 1) {
-            return UUID.randomUUID();
+            throw new RuntimeException("Dummy user error");
         }
-
-        return users.get(0).getId();
+        return users.get(0);
     }
 
     public void makeDummyArticleData() {

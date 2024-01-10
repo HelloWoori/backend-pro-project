@@ -11,7 +11,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(
         indexes = {

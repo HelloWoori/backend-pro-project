@@ -4,6 +4,7 @@ import hellowoori.backendproproject.domain.article.domain.*;
 import hellowoori.backendproproject.domain.article.exception.ArticleNotFoundException;
 import hellowoori.backendproproject.domain.article.exception.CommentNotFoundException;
 import hellowoori.backendproproject.domain.article.userinterface.dto.*;
+import hellowoori.backendproproject.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,9 +59,10 @@ public class ArticleService {
     }
 
     public void saveArticle(ArticleAddCommand articleAddCmd) {
-        articleRepository.save(articleAddCmd.toEntity());
+        articleRepository.save(articleAddCmd.toEntity(userServiceClient.getCurrentUser().getId()));
     }
 
+    @Transactional(readOnly = true)
     public List<CommentListDto> findAllCommentsByArticleId(Long articleId) {
         List<Comment> comments = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ArticleNotFoundException(articleId)).getComments();
@@ -77,20 +79,22 @@ public class ArticleService {
     public void saveComment(CommentAddCommand commentAddCmd) {
         Article article = articleRepository.findById(commentAddCmd.getArticleId())
                 .orElseThrow(() -> new ArticleNotFoundException(commentAddCmd.getArticleId()));
-        article.addComment(commentAddCmd.toEntity());
+        article.addComment(commentAddCmd.toEntity(userServiceClient.getCurrentUser().getId()));
     }
 
     @Transactional
     public void deleteComment(CommentDeleteCommand commentDeleteCmd) {
+        User user = userServiceClient.getCurrentUser();
         Article article = articleRepository.findById(commentDeleteCmd.getArticleId())
                 .orElseThrow(() -> new ArticleNotFoundException(commentDeleteCmd.getArticleId()));
-        Comment comment = article.findCommentByIdAndUserId(commentDeleteCmd.getCommentId(), commentDeleteCmd.getUserId())
-                .orElseThrow(() -> new CommentNotFoundException(commentDeleteCmd.getCommentId(), commentDeleteCmd.getUserId()));
+        Comment comment = article.findCommentByIdAndUserId(commentDeleteCmd.getCommentId(), user.getId())
+                .orElseThrow(() -> new CommentNotFoundException(commentDeleteCmd.getCommentId(), user.getId()));
         article.removeComment(comment);
     }
 
     @Transactional
-    public boolean toggleLove(Long articleId, UUID userId) {
+    public boolean toggleLove(Long articleId) {
+        UUID userId = userServiceClient.getCurrentUser().getId();
         Article article = articleRepository.findByIdAndUserId(articleId, userId)
                 .orElseThrow(() -> new ArticleNotFoundException(articleId));
         Optional<Love> existingLove = article.findLoveByUserId(userId);

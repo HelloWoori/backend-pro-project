@@ -12,7 +12,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(
         indexes = {

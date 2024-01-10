@@ -10,17 +10,15 @@ import java.util.UUID;
 @Setter
 public class CommentAddCommand {
 
-    private UUID userId;
     private Long articleId;
     private String content;
 
-    public CommentAddCommand(UUID userId, Long articleId, String content) {
-        this.userId = userId;
+    public CommentAddCommand(Long articleId, String content) {
         this.articleId = articleId;
         this.content = content;
     }
 
-    public Comment toEntity() {
-        return new Comment(this.getUserId(), this.getContent());
+    public Comment toEntity(UUID userId) {
+        return new Comment(userId, this.getContent());
     }
 }
