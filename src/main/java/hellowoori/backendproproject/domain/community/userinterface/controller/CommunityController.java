@@ -31,7 +31,7 @@ public class CommunityController {
     @PostMapping("/{communityId}/delete")
     public String removeCommunity(@PathVariable Long communityId) {
         communityService.deleteCommunity(communityId);
-        return "redirect:/";
+        return "redirect:/users/home";
     }
 
     @GetMapping("/recommend")

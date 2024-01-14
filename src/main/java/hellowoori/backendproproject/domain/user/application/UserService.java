@@ -2,7 +2,6 @@ package hellowoori.backendproproject.domain.user.application;
 
 import hellowoori.backendproproject.domain.user.domain.User;
 import hellowoori.backendproproject.domain.user.domain.UserRepository;
-import hellowoori.backendproproject.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +14,19 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User join(String nickname) {
-        User user = new User(nickname);
+    public User join(User user) {
         return userRepository.save(user);
+    }
+
+    public User login(String email, String password) {
+        return userRepository.findByEmail(email)
+                .filter(user -> user.getPassword().equals(password))
+                .orElse(null);
     }
 
     public User findOne(UUID userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+                .orElse(null);
     }
 
     public String findNickname(UUID userId) {

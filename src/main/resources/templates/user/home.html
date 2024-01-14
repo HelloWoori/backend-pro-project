@@ -8,7 +8,12 @@
 <body>
 <div class="container" style="max-width: 600px">
     <div class="py-5 text-center">
-        <h2>00님, 오늘 클라이밍 추천드려요!</h2>
+        <h2><span th:text="${user.nickname}">로그인 사용자 닉네임</span>님, 오늘 클라이밍 추천드려요!</h2>
+        <form th:action="@{/users/logout}" method="post">
+            <button class="btn btn-danger btn-sm" onclick="location.href='index.html'" type="submit">
+                로그아웃
+            </button>
+        </form>
     </div>
 
     <div class="row mb-2">
