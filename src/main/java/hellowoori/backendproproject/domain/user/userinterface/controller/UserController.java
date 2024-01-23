@@ -3,6 +3,7 @@ package hellowoori.backendproproject.domain.user.userinterface.controller;
 import hellowoori.backendproproject.domain.user.application.UserService;
 import hellowoori.backendproproject.domain.user.domain.User;
 import hellowoori.backendproproject.domain.user.userinterface.dto.UserLoginForm;
+import hellowoori.backendproproject.global.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final SessionManager sessionManager;
 
     @GetMapping("/add")
     public String showUserAddForm(@ModelAttribute("user") User user) {
@@ -40,7 +43,7 @@ public class UserController {
         return "user/userLoginForm";
     }
 
-    @PostMapping("/login")
+    //@PostMapping("/login")
     public String login(@Validated @ModelAttribute UserLoginForm form, BindingResult bindingResult, HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             return "user/userLoginForm";
@@ -58,7 +61,25 @@ public class UserController {
         return "redirect:/users/home";
     }
 
-    @GetMapping("/home")
+    @PostMapping("/login")
+    public String loginV2(@Validated @ModelAttribute UserLoginForm form, BindingResult bindingResult, HttpServletResponse response) {
+        if (bindingResult.hasErrors()) {
+            return "user/userLoginForm";
+        }
+
+        User loginUser = userService.login(form.getEmail(), form.getPassword());
+        if (loginUser == null) {
+            bindingResult.reject("loginFail",  "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "user/userLoginForm";
+        }
+
+        //세션 관리자를 통해 세션을 생성하고, 회원 데이터 보관
+        sessionManager.createSession(loginUser, response);
+
+        return "redirect:/users/home";
+    }
+
+    //@GetMapping("/home")
     public String showHome(@CookieValue(name="userId", required = false) UUID userId, Model model) {
         if (userId == null) {
             return "/";
@@ -73,9 +94,29 @@ public class UserController {
         return "user/home";
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/home")
+    public String showHomeV2(HttpServletRequest request, Model model) {
+
+        //세션 관리자에 저장된 회원 정보 조회
+        User loginUser = (User)sessionManager.getSession(request);
+
+        if (loginUser == null) {
+            return "/";
+        }
+
+        model.addAttribute("user", loginUser);
+        return "user/home";
+    }
+
+    //@PostMapping("/logout")
     public String logout(HttpServletResponse response) {
         expiredCookie(response, "userId");
+        return "redirect:/";
+    }
+
+    @PostMapping("/logout")
+    public String logoutV2(HttpServletRequest request) {
+        sessionManager.expire(request);
         return "redirect:/";
     }
 
