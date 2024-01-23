@@ -81,7 +81,7 @@ public class UserController {
         return "redirect:/users/home";
     }
 
-    @PostMapping("/login")
+    //@PostMapping("/login")
     public String loginV3(@Validated @ModelAttribute UserLoginForm form, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "user/userLoginForm";
@@ -100,6 +100,29 @@ public class UserController {
         session.setAttribute(SessionConst.LOGIN_USER, loginUser);
 
         return "redirect:/users/home";
+    }
+
+    @PostMapping("/login")
+    public String loginV4(@Validated @ModelAttribute UserLoginForm form, BindingResult bindingResult,
+                          @RequestParam(defaultValue = "/users/home") String redirectURL,
+                          HttpServletRequest request) {
+        if (bindingResult.hasErrors()) {
+            return "user/userLoginForm";
+        }
+
+        User loginUser = userService.login(form.getEmail(), form.getPassword());
+        if (loginUser == null) {
+            bindingResult.reject("loginFail",  "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "user/userLoginForm";
+        }
+
+        //로그인 성공 처리
+        //세션이 있으면, 있는 세션을 반환하고 없으면 신규 세션을 생성해서 반환
+        HttpSession session = request.getSession();
+        //세션에 로그인 회원 정보를 보관
+        session.setAttribute(SessionConst.LOGIN_USER, loginUser);
+
+        return "redirect:" + redirectURL;
     }
 
     //@GetMapping("/home")
