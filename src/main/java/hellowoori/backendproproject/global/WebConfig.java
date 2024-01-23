@@ -3,6 +3,7 @@ package hellowoori.backendproproject.global;
 import hellowoori.backendproproject.global.argumentresolver.LoginUserArgumentResolver;
 import hellowoori.backendproproject.global.filter.LogFilter;
 import hellowoori.backendproproject.global.filter.LoginCheckFilter;
+import hellowoori.backendproproject.global.interceptor.AlreadyLoginCheckInterceptor;
 import hellowoori.backendproproject.global.interceptor.LogInterceptor;
 import hellowoori.backendproproject.global.interceptor.LoginCheckInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -29,8 +30,12 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/css/**", "/*.ico", "/error");
 
-        registry.addInterceptor(new LoginCheckInterceptor())
+        registry.addInterceptor(new AlreadyLoginCheckInterceptor())
                 .order(2)
+                .addPathPatterns("/", "/users/add", "/users/login");
+
+        registry.addInterceptor(new LoginCheckInterceptor())
+                .order(3)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/", "/users/add", "/users/login", "/users/logout",

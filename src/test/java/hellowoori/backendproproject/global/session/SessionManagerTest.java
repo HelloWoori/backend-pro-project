@@ -1,7 +1,6 @@
 package hellowoori.backendproproject.global.session;
 
 import hellowoori.backendproproject.domain.user.domain.User;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
