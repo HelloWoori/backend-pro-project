@@ -3,6 +3,7 @@ package hellowoori.backendproproject.domain.user.userinterface.controller;
 import hellowoori.backendproproject.domain.user.application.UserService;
 import hellowoori.backendproproject.domain.user.domain.User;
 import hellowoori.backendproproject.domain.user.userinterface.dto.UserLoginForm;
+import hellowoori.backendproproject.global.argumentresolver.Login;
 import hellowoori.backendproproject.global.session.SessionConst;
 import hellowoori.backendproproject.global.session.SessionManager;
 import lombok.RequiredArgsConstructor;
@@ -174,9 +175,23 @@ public class UserController {
         return "user/home";
     }
 
-    @GetMapping("/home")
+    //@GetMapping("/home")
     public String showHomeV3Spring(
             @SessionAttribute(name = SessionConst.LOGIN_USER, required = false) User loginUser, Model model) {
+
+        //세션에 회원 데이터가 없으면
+        if (loginUser == null) {
+            return "/";
+        }
+
+        //세션이 유지되면 로그인으로 이동
+        model.addAttribute("user", loginUser);
+        return "user/home";
+    }
+
+    @GetMapping("/home")
+    public String showHomeV3ArgumentResolver(
+            @Login User loginUser, Model model) {
 
         //세션에 회원 데이터가 없으면
         if (loginUser == null) {
