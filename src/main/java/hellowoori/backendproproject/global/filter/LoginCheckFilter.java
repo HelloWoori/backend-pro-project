@@ -30,7 +30,7 @@ public class LoginCheckFilter implements Filter {
                 HttpSession session = httpRequest.getSession(false);
                 if (session == null || session.getAttribute(SessionConst.LOGIN_USER) == null) {
                     log.info("미인증 사용자 요청 {}", requestURI);
-                    // 로그인으로 redirect
+                    //로그인으로 redirect
                     httpResponse.sendRedirect("/users/login?redirectURL=" + requestURI);
                     return; //여기 중요, 미인증 사용자는 다음으로 진행하지 않고 끝!
                 }
