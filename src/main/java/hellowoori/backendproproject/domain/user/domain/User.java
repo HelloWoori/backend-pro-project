@@ -4,15 +4,16 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(
-        name = "user"
+@Table(          name = "user"
 )
 public class User {
 
@@ -25,7 +26,6 @@ public class User {
     private String nickname;
 
     public User(String nickname) {
-        this.id = UUID.randomUUID();
         this.nickname = nickname;
     }
 }

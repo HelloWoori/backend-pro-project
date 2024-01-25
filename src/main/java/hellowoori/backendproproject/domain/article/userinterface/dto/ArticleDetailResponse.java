@@ -13,7 +13,7 @@ public class ArticleDetailResponse {
     private String communityName;
     private String imagePath;
     private String content;
-    private Long loveCount;
+    private int loveCount;
 
     public ArticleDetailResponse(
             Long articleId,
@@ -22,7 +22,7 @@ public class ArticleDetailResponse {
             String communityName,
             String imagePath,
             String content,
-            Long loveCount) {
+            int loveCount) {
         this.articleId = articleId;
         this.communityId = communityId;
         this.nickname = nickname;

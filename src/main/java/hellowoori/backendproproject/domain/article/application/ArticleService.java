@@ -4,12 +4,13 @@ import hellowoori.backendproproject.domain.article.domain.*;
 import hellowoori.backendproproject.domain.article.exception.ArticleNotFoundException;
 import hellowoori.backendproproject.domain.article.exception.CommentNotFoundException;
 import hellowoori.backendproproject.domain.article.userinterface.dto.*;
-import hellowoori.backendproproject.domain.community.application.CommunityService;
-import hellowoori.backendproproject.domain.user.application.UserService;
+import hellowoori.backendproproject.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,25 +19,24 @@ import java.util.stream.Collectors;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
-    private final CommentRepository commentRepository;
-    private final LoveRepository loveRepository;
 
-    private final UserService userService;
-    private final CommunityService communityService;
+    private final UserServiceClient userServiceClient;
+    private final CommunityServiceClient communityServiceClient;
 
+    @Transactional(readOnly = true)
     public List<ArticleListDto> findAllArticlesByCommunityId(Long communityId) {
-        List<Long> articleIds = articleRepository.findIdsByCommunityId(communityId);
-        List<Article> articles = articleRepository.findAllById(articleIds);
+        List<Article> articles = articleRepository.findAllByCommunityId(communityId);
 
         return articles.stream()
                 .map(article -> new ArticleListDto(
                         article.getId(),
                         article.getCommunityId(),
-                        userService.findNickname(article.getUserId()),
+                        userServiceClient.findNickname(article.getUserId()),
                         article.getImagePath()))
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public ArticleDetailDto findOneArticle(Long articleId) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ArticleNotFoundException(articleId));
@@ -44,9 +44,9 @@ public class ArticleService {
         UUID userId = article.getUserId();
         Long communityId = article.getCommunityId();
 
-        String nickname = userService.findNickname(userId);
-        String communityName = communityService.findCommunityName(communityId);
-        Long loveCount = this.countLove(articleId);
+        String nickname = userServiceClient.findNickname(userId);
+        String communityName = communityServiceClient.findCommunityName(communityId);
+        int loveCount = article.getLoveCount();
 
         return new ArticleDetailDto(
                 articleId,
@@ -59,50 +59,51 @@ public class ArticleService {
     }
 
     public void saveArticle(ArticleAddCommand articleAddCmd) {
-        articleRepository.save(articleAddCmd.toEntity());
+        articleRepository.save(articleAddCmd.toEntity(userServiceClient.getCurrentUser().getId()));
     }
 
+    @Transactional(readOnly = true)
     public List<CommentListDto> findAllCommentsByArticleId(Long articleId) {
-        List<Comment> comments = articleRepository.findById(articleId).get().getComments();
+        List<Comment> comments = articleRepository.findById(articleId)
+                .orElseThrow(() -> new ArticleNotFoundException(articleId)).getComments();
         return comments.stream()
                 .map(comment -> new CommentListDto(
                         comment.getId(),
                         comment.getArticle().getId(),
-                        userService.findNickname(comment.getUserId()),
+                        userServiceClient.findNickname(comment.getUserId()),
                         comment.getContent()))
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void saveComment(CommentAddCommand commentAddCmd) {
         Article article = articleRepository.findById(commentAddCmd.getArticleId())
                 .orElseThrow(() -> new ArticleNotFoundException(commentAddCmd.getArticleId()));
-        commentRepository.save(commentAddCmd.toEntity(article));
+        article.addComment(commentAddCmd.toEntity(userServiceClient.getCurrentUser().getId()));
     }
 
-    public void deleteComment(Long commentId, UUID userId) {
-        Comment comment = commentRepository.findByIdAndUserId(commentId, userId)
-                .orElseThrow(() -> new CommentNotFoundException(commentId, userId));
-        System.out.println(comment.getContent());
-        commentRepository.delete(comment);
+    @Transactional
+    public void deleteComment(CommentDeleteCommand commentDeleteCmd) {
+        User user = userServiceClient.getCurrentUser();
+        Article article = articleRepository.findById(commentDeleteCmd.getArticleId())
+                .orElseThrow(() -> new ArticleNotFoundException(commentDeleteCmd.getArticleId()));
+        Comment comment = article.findCommentByIdAndUserId(commentDeleteCmd.getCommentId(), user.getId())
+                .orElseThrow(() -> new CommentNotFoundException(commentDeleteCmd.getCommentId(), user.getId()));
+        article.removeComment(comment);
     }
 
-    public Long countLove(Long articleId) {
-        return loveRepository.countByArticleId(articleId);
-    }
-
-    public boolean updateLove(Long articleId, UUID userId) {
-        Love existingLove = loveRepository.findByArticleIdAndUserId(articleId, userId);
-
-        if (existingLove != null) {
-            //이미 행이 있는 경우, 좋아요 취소
-            loveRepository.deleteById(existingLove.getId());
+    @Transactional
+    public boolean toggleLove(Long articleId) {
+        UUID userId = userServiceClient.getCurrentUser().getId();
+        Article article = articleRepository.findByIdAndUserId(articleId, userId)
+                .orElseThrow(() -> new ArticleNotFoundException(articleId));
+        Optional<Love> existingLove = article.findLoveByUserId(userId);
+        if (existingLove.isPresent()) {
+            article.removeLove(existingLove.get());
             return false;
         } else {
-            //행이 없는 경우, 좋아요 추가
-            Article article = articleRepository.findById(articleId)
-                    .orElseThrow(() -> new ArticleNotFoundException(articleId));
             Love newLove = new Love(userId, article);
-            loveRepository.save(newLove);
+            article.addLove(newLove);
             return true;
         }
     }

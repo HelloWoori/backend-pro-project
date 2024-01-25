@@ -10,28 +10,25 @@ import java.util.UUID;
 @Setter
 public class ArticleAddCommand {
 
-    private UUID userId;
     private Long communityId;
     private String imagePath;
     private String content;
     private boolean isCommentAllowed;
 
     public ArticleAddCommand(
-            UUID userId,
             Long communityId,
             String imagePath,
             String content,
             boolean isCommentAllowed) {
-        this.userId = userId;
         this.communityId = communityId;
         this.imagePath = imagePath;
         this.content = content;
         this.isCommentAllowed = isCommentAllowed;
     }
 
-    public Article toEntity() {
+    public Article toEntity(UUID userId) {
         return new Article(
-                this.getUserId(),
+                userId,
                 this.getCommunityId(),
                 this.getImagePath(),
                 this.getContent(),

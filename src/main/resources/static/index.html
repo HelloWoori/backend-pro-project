@@ -8,17 +8,36 @@
 <body>
 <div class="container" style="max-width: 600px">
     <div class="py-5 text-center">
-        <h2>내 모임 목록</h2>
+        <h2>00님, 오늘 클라이밍 추천드려요!</h2>
     </div>
 
-    <div class="row">
-        <ul class="list-group">
-            <!-- TODO: '모임'이 구현되면 수정할 것 -->
-            <li class="list-group-item"><a href="/communities/1/articles">모임 1</a></li>
-            <li class="list-group-item"><a href="/communities/2/articles">모임 2</a></li>
-            <li class="list-group-item"><a href="/communities/3/articles">모임 3</a></li>
-        </ul>
-    </div><!-- /row -->
+    <div class="row mb-2">
+        <a href="/communities" class="btn btn-primary">+         모임 만들기         ></a>
+    </div>
+
+    <div class="row mb-5">
+        <a href="/communities/recommend" class="btn btn-secondary">모임 찾기</a>
+    </div>
+
+    <div class="row" id="result"></div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "/communities/my",
+            success: function (data) {
+                $("#result").html(data);
+            },
+            error: function (error) {
+                console.error("Error fetching myCommunities:", error);
+            }
+        });
+    });
+</script>
 </body>
 </html>

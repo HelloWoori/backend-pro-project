@@ -1,0 +1,7 @@
+<h3>내 모임</h3>
+<ul class="list-group">
+  <li th:each="community : ${myCommunities}" class="list-group-item">
+    <a th:href="@{/communities/{communityId}/articles(communityId=${community.communityId})}"
+       th:text="${community.communityName}"></a>
+  </li>
+</ul>

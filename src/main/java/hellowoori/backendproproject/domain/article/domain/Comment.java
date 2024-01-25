@@ -2,15 +2,15 @@ package hellowoori.backendproproject.domain.article.domain;
 
 import hellowoori.backendproproject.global.entity.BaseTimeEntity;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Table(
         indexes = {
@@ -35,9 +35,12 @@ public class Comment extends BaseTimeEntity {
     @ToString.Exclude
     private Article article;
 
-    public Comment(UUID userId, String content, Article article) {
+    public Comment(UUID userId, String content) {
         this.userId = userId;
         this.content = content;
+    }
+
+    public void setArticle(Article article) {
         this.article = article;
     }
 }

@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>모임 만들기</h2>
+    </div>
+
+    <form th:action="@{/communities}" method="post">
+        <div class="form-group mb-3">
+            <label for="name" class="form-label">모임명</label>
+            <input class="form-control" type="text" id="name" name="name" placeholder="예)가산동울끈불끈클럽🔥" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="introduction">모임 소개</label>
+            <textarea class="form-control" id="introduction" name="introduction" rows="5" maxlength="150"
+            placeholder="예)우리 모임은 매주 목요일 오전 6시 안양천에서 함께 뛰고 있어요! 열정 짱짱맨 분들을 환영합니다." required></textarea>
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">가입 방식</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" th:name="joinStatus" th:value="JOIN_FREE" id="joinFree" checked>
+                <label class="form-check-label" for="joinFree">자유 가입</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" th:name="joinStatus" th:value="JOIN_APPLY" id="joinApply">
+                <label class="form-check-label" for="joinApply">신청 가입</label>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row">
+            <div class="col">
+                <button class="w-100 btn btn-primary btn-lg" type="submit">모임 만들기 완료!</button>
+            </div>
+            <div class="col">
+                <button class="w-100 btn btn-secondary btn-lg"
+                        th:onclick="|location.href='@{/}'|"
+                        type="button">돌아가기</button>
+            </div>
+        </div><!-- /row -->
+    </form>
+</div> <!-- /container -->
+</body>
+</html>
