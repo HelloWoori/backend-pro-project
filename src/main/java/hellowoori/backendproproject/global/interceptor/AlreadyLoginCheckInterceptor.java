@@ -14,13 +14,14 @@ public class AlreadyLoginCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String requestURI = request.getRequestURI();
+        log.info("이미 로그인한 사용자 체크 인터셉터 실행 [{}]", requestURI);
 
-        log.info("이미 로그인한 사용자 체크 인터셉터 실행 {}", requestURI);
         HttpSession session = request.getSession(false);
-
         if (session != null && session.getAttribute(SessionConst.LOGIN_USER) != null) {
             log.info("이미 로그인한 사용자 요청");
             response.sendRedirect("/users/home");
+        } else {
+            log.info("미로그인 사용자 요청");
         }
 
         return true;
