@@ -5,8 +5,7 @@ import hellowoori.backendproproject.domain.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +31,17 @@ public class UserService {
     public String findNickname(UUID userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         return optionalUser.map(User::getNickname).orElse(null);
+    }
+
+    public Map<UUID, String> findAllNicknames(Set<UUID> userIds) {
+        Map<UUID, String> nicknamesByUserIdsMap = new HashMap<>();
+        List<Object[]> nicknamesByUserIds = userRepository.findNicknamesByUserIds(userIds);
+        for (Object[] nicknameByUserId : nicknamesByUserIds) {
+            UUID userId = (UUID) nicknameByUserId[0];
+            String nickname = (String) nicknameByUserId[1];
+            nicknamesByUserIdsMap.put(userId, nickname);
+        }
+
+        return nicknamesByUserIdsMap;
     }
 }
