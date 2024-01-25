@@ -2,16 +2,13 @@ package hellowoori.backendproproject.domain.article.application;
 
 import hellowoori.backendproproject.domain.article.domain.*;
 import hellowoori.backendproproject.domain.article.exception.ArticleNotFoundException;
-import hellowoori.backendproproject.domain.article.exception.CommentNotFoundException;
 import hellowoori.backendproproject.domain.article.userinterface.dto.*;
 import hellowoori.backendproproject.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,11 +24,17 @@ public class ArticleService {
     public List<ArticleListDto> findAllArticlesByCommunityId(Long communityId) {
         List<Article> articles = articleRepository.findAllByCommunityId(communityId);
 
+        Set<UUID> userIds = articles.stream()
+                .map(Article::getUserId)
+                .collect(Collectors.toSet());
+
+        Map<UUID, String> nicknamesByUserIdsMap = userServiceClient.findAllNicknames(userIds);
+
         return articles.stream()
                 .map(article -> new ArticleListDto(
                         article.getId(),
                         article.getCommunityId(),
-                        userServiceClient.findNickname(article.getUserId()),
+                        nicknamesByUserIdsMap.get(article.getUserId()),
                         article.getImagePath()))
                 .collect(Collectors.toList());
     }
@@ -58,6 +61,7 @@ public class ArticleService {
                 loveCount);
     }
 
+    @Transactional
     public void saveArticle(ArticleAddCommand articleAddCmd) {
         articleRepository.save(articleAddCmd.toEntity(userServiceClient.getCurrentUser().getId()));
     }
@@ -87,9 +91,7 @@ public class ArticleService {
         User user = userServiceClient.getCurrentUser();
         Article article = articleRepository.findById(commentDeleteCmd.getArticleId())
                 .orElseThrow(() -> new ArticleNotFoundException(commentDeleteCmd.getArticleId()));
-        Comment comment = article.findCommentByIdAndUserId(commentDeleteCmd.getCommentId(), user.getId())
-                .orElseThrow(() -> new CommentNotFoundException(commentDeleteCmd.getCommentId(), user.getId()));
-        article.removeComment(comment);
+        article.removeComment(user.getId(), commentDeleteCmd.getCommentId());
     }
 
     @Transactional
@@ -97,14 +99,6 @@ public class ArticleService {
         UUID userId = userServiceClient.getCurrentUser().getId();
         Article article = articleRepository.findByIdAndUserId(articleId, userId)
                 .orElseThrow(() -> new ArticleNotFoundException(articleId));
-        Optional<Love> existingLove = article.findLoveByUserId(userId);
-        if (existingLove.isPresent()) {
-            article.removeLove(existingLove.get());
-            return false;
-        } else {
-            Love newLove = new Love(userId, article);
-            article.addLove(newLove);
-            return true;
-        }
+        return article.changeLove(userId);
     }
 }

@@ -13,8 +13,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(          name = "user"
-)
 public class User {
 
     @Id
@@ -22,10 +20,18 @@ public class User {
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID id;
 
+    @Column(nullable = false)
+    private String email;
+
     @Column(nullable = false, length = 10)
     private String nickname;
 
-    public User(String nickname) {
+    @Column(nullable = false)
+    private String password;
+
+    public User(String email, String nickname, String password) {
+        this.email = email;
         this.nickname = nickname;
+        this.password = password;
     }
 }
