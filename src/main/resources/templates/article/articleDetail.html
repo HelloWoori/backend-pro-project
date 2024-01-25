@@ -24,7 +24,7 @@
                     <div class="card-body">
                         <h6 class="card-title">#<span th:text="${articleDetail.communityName}">모임명</span></h6>
                         <p class="card-text" th:text="${articleDetail.content}">내용</p>
-                        <form method="post" th:action="@{/communities/{communityId}/articles/{articleId}/like(communityId=${articleDetail.communityId}, articleId=${articleDetail.articleId})}">
+                        <form method="post" th:action="@{/communities/{communityId}/articles/{articleId}/love(communityId=${articleDetail.communityId}, articleId=${articleDetail.articleId})}">
                             <button type="submit" class="btn btn-danger mb-2">
                                 하트 +<span th:text="${articleDetail.loveCount}">1</span>
                             </button>

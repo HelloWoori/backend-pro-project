@@ -56,7 +56,7 @@ public class ArticleCommunityController {
         return "redirect:/communities/{communityId}/articles";
     }
 
-    @PostMapping("/{articleId}/like")
+    @PostMapping("/{articleId}/love")
     public String likeArticle(@PathVariable Long articleId, RedirectAttributes redirectAttributes) {
         boolean resultLove = articleService.toggleLove(articleId);
         redirectAttributes.addAttribute("resultLove", resultLove);

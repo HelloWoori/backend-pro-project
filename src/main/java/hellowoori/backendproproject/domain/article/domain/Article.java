@@ -1,5 +1,6 @@
 package hellowoori.backendproproject.domain.article.domain;
 
+import hellowoori.backendproproject.domain.article.exception.CommentNotFoundException;
 import hellowoori.backendproproject.global.entity.BaseTimeEntity;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -63,9 +64,10 @@ public class Article extends BaseTimeEntity {
         comment.setArticle(this);
     }
 
-    public void removeComment(Comment comment) {
-        comments.remove(comment);
-        comment.setArticle(null);
+    public void removeComment(UUID userId, Long commentId) {
+        Comment commentToDelete = validateComment(userId, commentId);
+        comments.remove(commentToDelete);
+        commentToDelete.setArticle(null);
     }
 
     public Optional<Comment> findCommentByIdAndUserId(Long commentId, UUID userId) {
@@ -74,15 +76,6 @@ public class Article extends BaseTimeEntity {
                 .findFirst();
     }
 
-    public void addLove(Love love) {
-        loves.add(love);
-        love.setArticle(this);
-    }
-
-    public void removeLove(Love love) {
-        loves.remove(love);
-        love.setArticle(null);
-    }
 
     public Optional<Love> findLoveByUserId(UUID userId) {
         return loves.stream()
@@ -92,5 +85,34 @@ public class Article extends BaseTimeEntity {
 
     public int getLoveCount() {
         return loves.size();
+    }
+
+    public boolean changeLove(UUID userId) {
+        Optional<Love> existingLove = findLoveByUserId(userId);
+        if (existingLove.isPresent()) {
+            removeLove(existingLove.get());
+            return false;
+        } else {
+            Love newLove = new Love(userId, this);
+            addLove(newLove);
+            return true;
+        }
+    }
+
+    private void addLove(Love love) {
+        loves.add(love);
+        love.setArticle(this);
+    }
+
+    private void removeLove(Love love) {
+        loves.remove(love);
+        love.setArticle(null);
+    }
+
+    private Comment validateComment(UUID userId, Long commentId) {
+        return comments.stream()
+                .filter(comment -> comment.getId().equals(commentId))
+                .findFirst()
+                .orElseThrow(() -> new CommentNotFoundException(commentId, userId));
     }
 }

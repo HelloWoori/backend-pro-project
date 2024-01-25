@@ -7,6 +7,8 @@ import hellowoori.backendproproject.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Component
@@ -24,6 +26,11 @@ public class UserServiceClientImpl implements UserServiceClient {
     @Override
     public String findNickname(UUID userId) {
         return userService.findNickname(userId);
+    }
+
+    @Override
+    public Map<UUID, String> findAllNicknames(Set<UUID> userIds) {
+        return userService.findAllNicknames(userIds);
     }
 
     @Override
