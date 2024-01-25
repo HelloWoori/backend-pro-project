@@ -34,9 +34,9 @@ public class DummyService {
     }
 
     public void makeDummyUserData() {
-        userRepository.save(new User("a@gamil.com", "dummy01", "1234"));
-        userRepository.save(new User("b@gamil.com", "dummy02", "4567"));
-        userRepository.save(new User("c@gamil.com", "dummy03", "8910"));
+        userRepository.save(new User("a@gmail.com", "dummy01", "1234"));
+        userRepository.save(new User("b@gmail.com", "dummy02", "4567"));
+        userRepository.save(new User("c@gmail.com", "dummy03", "8910"));
     }
 
     public void makeDummyCommunityData() {

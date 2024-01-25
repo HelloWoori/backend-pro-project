@@ -1,5 +1,6 @@
 package hellowoori.backendproproject.global.interceptor;
 
+import hellowoori.backendproproject.global.ThreadLocalContext;
 import hellowoori.backendproproject.global.session.SessionConst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -26,6 +27,10 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             response.sendRedirect("/users/login?redirectURL=" + requestURI);
             return false;
         }
+
+        //로그인된 사용자
+        log.info("인증 사용자 요청");
+        ThreadLocalContext.put(SessionConst.LOGIN_USER, session.getAttribute(SessionConst.LOGIN_USER));
 
         return true;
     }

@@ -3,6 +3,7 @@ package hellowoori.backendproproject.domain.user.userinterface.controller;
 import hellowoori.backendproproject.domain.user.application.UserService;
 import hellowoori.backendproproject.domain.user.domain.User;
 import hellowoori.backendproproject.domain.user.userinterface.dto.UserLoginForm;
+import hellowoori.backendproproject.global.ThreadLocalContext;
 import hellowoori.backendproproject.global.argumentresolver.Login;
 import hellowoori.backendproproject.global.session.SessionConst;
 import lombok.RequiredArgsConstructor;
@@ -55,11 +56,7 @@ public class UserController {
             return "user/userLoginForm";
         }
 
-        //로그인 성공 처리
-        //세션이 있으면, 있는 세션을 반환하고 없으면 신규 세션을 생성해서 반환
-        HttpSession session = request.getSession();
-        //세션에 로그인 회원 정보를 보관
-        session.setAttribute(SessionConst.LOGIN_USER, loginUser);
+        ThreadLocalContext.put(SessionConst.LOGIN_USER, loginUser);
 
         return "redirect:" + redirectURL;
     }
